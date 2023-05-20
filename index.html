@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Preferences App</title>
+  <style>
+    .page {
+      display: none;
+    }
+
+    .active-page {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Preferences App</h1>
+  <form>
+    <div class="page active-page">
+      <h2>Person 1</h2>
+      <label><input type="checkbox" name="preference1" value="Item 1"> Item 1</label><br>
+      <label><input type="checkbox" name="preference1" value="Item 2"> Item 2</label><br>
+      <label><input type="checkbox" name="preference1" value="Item 3"> Item 3</label><br>
+      <label><input type="checkbox" name="preference1" value="Item 4"> Item 4</label><br>
+
+      <br>
+      <button type="button" class="next-page">Next</button>
+    </div>
+
+    <div class="page">
+      <h2>Person 2</h2>
+      <label><input type="checkbox" name="preference2" value="Item 1"> Item 1</label><br>
+      <label><input type="checkbox" name="preference2" value="Item 2"> Item 2</label><br>
+      <label><input type="checkbox" name="preference2" value="Item 3"> Item 3</label><br>
+      <label><input type="checkbox" name="preference2" value="Item 4"> Item 4</label><br>
+
+      <br>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+  <div class="page">
+    <h2>Results</h2>
+    <p id="commonPrefs"></p>
+  </div>
+
+  <script>
+    const form = document.querySelector('form');
+    const pages = document.querySelectorAll('.page');
+    const nextPageBtns = document.querySelectorAll('.next-page');
+    const commonPrefsEl = document.getElementById('commonPrefs');
+    let prefs1 = [];
+    let prefs2 = [];
+
+    nextPageBtns.forEach(btn => {
+      btn.addEventListener('click', event => {
+        const currentPage = event.target.closest('.page');
+        const nextPage = currentPage.nextElementSibling;
+        currentPage.classList.remove('active-page');
+        nextPage.classList.add('active-page');
+
+        prefs1 = Array.from(form.elements['preference1'])
+          .filter(checkbox => checkbox.checked)
+          .map(checkbox => checkbox.value);
+      });
+    });
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      prefs2 = Array.from(form.elements['preference2'])
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+
+      const commonPrefs = prefs1.filter(p => prefs2.includes(p));
+      commonPrefsEl.innerText = `Common preferences: ${commonPrefs.join(', ')}`;
+
+      // Show the results page
+      pages.forEach(page => {
+        page.classList.remove('active-page');
+      });
+      commonPrefsEl.closest('.page').classList.add('active-page');
+    });
+  </script>
+</body>
+</html>
